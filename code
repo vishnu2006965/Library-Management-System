@@ -1,0 +1,49 @@
+import java.sql.*;
+import java.util.Scanner;
+
+public class LibraryManagement {
+    private static final String URL = "jdbc:postgresql://localhost:5432/librarydb";
+    private static final String USER = "postgres";
+    private static final String PASSWORD = "Yashvin@19";
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            while (true) {
+                System.out.println("\n=== Library Management System ===");
+                System.out.println("1. Add Book");
+                System.out.println("2. Issue Book");
+                System.out.println("3. Return Book");
+                System.out.println("4. View All Books");
+                System.out.println("5. Exit");
+                System.out.print("Choose an option: ");
+                int choice = sc.nextInt();
+                sc.nextLine();
+
+                switch (choice) {
+                    case 1 -> addBook(conn, sc);
+                    case 2 -> issueBook(conn, sc);
+                    case 3 -> returnBook(conn, sc);
+                    case 4 -> viewBooks(conn);
+                    case 5 -> {
+                        System.out.println("Exiting...");
+                        return;
+                    }
+                    default -> System.out.println("Invalid choice!");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void addBook(Connection conn, Scanner sc) throws SQLException {
+        System.out.print("Enter book title: ");
+        String title = sc.nextLine();
+        System.out.print("Enter author name: ");
+        String author = sc.nextLine();
+        String sql = "INSERT INTO books (title, author) VALUES (?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, title);
+            stmt.setString(2, author);
+}
